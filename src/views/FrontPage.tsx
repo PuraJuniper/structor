@@ -9,6 +9,8 @@ import { useTranslation } from 'react-i18next';
 import FormBuilder from './FormBuilder';
 import Btn from '../components/Btn/Btn';
 import './FrontPage.css';
+import { SAGESendToStructorEv, SAGESendToStructorEvName, StructorReadyEvName, StructorReadyEvNameData } from '../types/SAGE';
+
 
 const FrontPage = (): JSX.Element => {
     const { t } = useTranslation();
@@ -19,8 +21,36 @@ const FrontPage = (): JSX.Element => {
     const uploadRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        getStoredQuestionnaire();
+        // getStoredQuestionnaire(); // SAGE: Don't restore any questionnaire from storage
     }, []);
+
+    // SAGE: Add event listener to load Questionnaires
+    useEffect(() => {
+        const sageInputHandler = ((event: SAGESendToStructorEv) => {
+            console.log('structor got event:');
+            console.log(event);
+            const importedState = mapToTreeState(event.detail.questionnaireResource);
+            dispatch(resetQuestionnaireAction(importedState));
+            setIsLoading(false);
+            setIsFormBuilderShown(true);
+            // Tell SAGE that Structor has loaded the Questionnaire that was sent
+            console.log(window.parent.document.dispatchEvent(new CustomEvent<StructorReadyEvNameData>(StructorReadyEvName, {
+                detail: {
+                    readyType: "load"
+                }
+            })));
+        }) as EventListener;
+        window.document.addEventListener(SAGESendToStructorEvName, sageInputHandler, false)
+        
+        // Tell SAGE that Structor is ready to receive events
+        console.log(window.parent.document.dispatchEvent(new CustomEvent<StructorReadyEvNameData>(StructorReadyEvName, {
+            detail: {
+                readyType: "start"
+            }
+        })));
+
+		return () => window.document.removeEventListener(SAGESendToStructorEvName, sageInputHandler);
+    }, [dispatch]);
 
     const getStoredQuestionnaire = async () => {
         const indexedDbState = await getStateFromDb();

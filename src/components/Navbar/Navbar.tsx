@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useRef, useState, useEffect, useCallback } from 'react';
 import { generateQuestionnaire } from '../../helpers/generateQuestionnaire';
 import { TreeContext } from '../../store/treeStore/treeStore';
 import Btn from '../Btn/Btn';
@@ -12,6 +12,7 @@ import { saveAction } from '../../store/treeStore/treeActions';
 import { validateOrphanedElements, ValidationErrors } from '../../helpers/orphanValidation';
 import { ValidationErrorsModal } from '../ValidationErrorsModal/validationErrorsModal';
 import { useTranslation } from 'react-i18next';
+import { SAGETriggerSendEv, SAGETriggerSendEvName, StructorSendToSAGEEvData, StructorSendToSAGEEvName } from '../../types/SAGE';
 
 type Props = {
     showFormFiller: () => void;
@@ -34,7 +35,32 @@ const Navbar = ({ showFormFiller, setValidationErrors, validationErrors }: Props
     const [showJSONView, setShowJSONView] = useState(false);
     const [showValidationErrors, setShowValidationErrors] = useState<boolean>(false);
     const navBarRef = useRef<HTMLDivElement>(null);
-    const fileExtension = 'json';
+
+    const exportToJsonAndDownload = useCallback(() => {
+        // SAGE: Send questionnaire in a CustomEvent to the parent document
+        const questionnaire = generateQuestionnaire(state);
+        const questionnaireToSageEvent = new CustomEvent<StructorSendToSAGEEvData>(StructorSendToSAGEEvName, {
+            detail: {
+            questionnaireStr: questionnaire
+            }
+        });
+        console.log('sending event:');
+        console.log(questionnaireToSageEvent);
+        window.parent.document.dispatchEvent(questionnaireToSageEvent);
+        dispatch(saveAction());
+    }, [state, dispatch]);
+
+    // SAGE: Add event listener for triggers to send the current questionnaire to SAGE
+    useEffect(() => {
+        const triggerSendEvHandler = ((event: SAGETriggerSendEv) => {
+            console.log('structor: save triggered by SAGE');
+            console.log(event);
+            exportToJsonAndDownload();
+        }) as EventListener;
+        window.document.addEventListener(SAGETriggerSendEvName, triggerSendEvHandler, false)
+
+		return () => window.document.removeEventListener(SAGETriggerSendEvName, triggerSendEvHandler);
+    }, [exportToJsonAndDownload]);
 
     const hideMenu = () => {
         setSelectedMenuItem(MenuItem.none);
@@ -56,28 +82,6 @@ const Navbar = ({ showFormFiller, setValidationErrors, validationErrors }: Props
         }
         return `${technicalName}${version}`;
     };
-
-    function exportToJsonAndDownload() {
-        const questionnaire = generateQuestionnaire(state);
-        const filename = `${getFileName()}.${fileExtension}`;
-        const contentType = 'application/json;charset=utf-8;';
-
-        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-            const blob = new Blob([decodeURIComponent(encodeURI(questionnaire))], {
-                type: contentType,
-            });
-            navigator.msSaveOrOpenBlob(blob, filename);
-        } else {
-            const a = document.createElement('a');
-            a.download = filename;
-            a.href = 'data:' + contentType + ',' + encodeURIComponent(questionnaire);
-            a.target = '_blank';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-        dispatch(saveAction());
-    }
 
     const handleMenuItemClick = (clickedItem: MenuItem) => {
         if (selectedMenuItem !== clickedItem) {
@@ -111,7 +115,7 @@ const Navbar = ({ showFormFiller, setValidationErrors, validationErrors }: Props
                         </p>
                     )}
                     <Btn title={t('Preview')} onClick={showFormFiller} />
-                    <Btn title={t('Save')} onClick={() => exportToJsonAndDownload()} />
+                    <Btn title={t('Send to SAGE')} onClick={() => exportToJsonAndDownload()} />
                     <div
                         className="more-menu"
                         tabIndex={0}

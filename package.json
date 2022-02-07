@@ -1,6 +1,7 @@
 {
     "name": "formbuilder",
     "version": "1.0.0",
+    "homepage": ".",
     "private": true,
     "dependencies": {
         "@ckeditor/ckeditor5-react": "^3.0.0",

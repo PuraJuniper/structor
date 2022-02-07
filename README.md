@@ -15,3 +15,13 @@ Either open the demo at [formdesigner.helsenorgelab.no/](https://formdesigner.he
 ## Netlify functions
 
 Run `npm install -g netlify-cli` before running npm run functions :)
+
+## Embedding into SAGE
+
+### Development
+
+Run `npm run build` to build the app, then run `node server.js` to serve it on port 9001 as expected by SAGE's webpack-dev-server config
+
+### Production
+
+TBD

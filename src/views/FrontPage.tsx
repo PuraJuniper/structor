@@ -160,7 +160,7 @@ const FrontPage = (): JSX.Element => {
                                 uploadRef.current?.click();
                             }}
                             title={t('Upload questionnaire')}
-                            variant="secondary"
+                            variant="primary"
                         />
                     </div>
                 </>

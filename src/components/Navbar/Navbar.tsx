@@ -12,7 +12,7 @@ import { saveAction } from '../../store/treeStore/treeActions';
 import { validateOrphanedElements, validateTranslations, ValidationErrors } from '../../helpers/orphanValidation';
 import { ValidationErrorsModal } from '../ValidationErrorsModal/validationErrorsModal';
 import { useTranslation } from 'react-i18next';
-import { SAGETriggerSendEv, SAGETriggerSendEvName, StructorSendToSAGEEvData, StructorSendToSAGEEvName } from '../../types/SAGE';
+import { SAGEMessageID, StructorSendToSAGEMsg, SAGETriggerSendMsg, StructorMessageID } from '../../types/SAGE';
 
 type Props = {
     showFormFiller: () => void;
@@ -45,29 +45,30 @@ const Navbar = ({
     const navBarRef = useRef<HTMLDivElement>(null);
 
     const exportToJsonAndDownload = useCallback(() => {
-        // SAGE: Send questionnaire in a CustomEvent to the parent document
+        // SAGE: Send questionnaire (in string form) as a message to the parent window
         const questionnaire = generateQuestionnaire(state);
-        const questionnaireToSageEvent = new CustomEvent<StructorSendToSAGEEvData>(StructorSendToSAGEEvName, {
-            detail: {
-            questionnaireStr: questionnaire
-            }
-        });
+        const questionnaireToSageMsg: StructorSendToSAGEMsg = {
+            msgId: StructorMessageID.SendToSAGE,
+            questionnaireStr: questionnaire,
+        };
         console.log('sending event:');
-        console.log(questionnaireToSageEvent);
-        window.parent.document.dispatchEvent(questionnaireToSageEvent);
+        console.log(questionnaireToSageMsg);
+        parent.postMessage(questionnaireToSageMsg, "*");
         dispatch(saveAction());
     }, [state, dispatch]);
 
     // SAGE: Add event listener for triggers to send the current questionnaire to SAGE
     useEffect(() => {
-        const triggerSendEvHandler = ((event: SAGETriggerSendEv) => {
-            console.log('structor: save triggered by SAGE');
-            console.log(event);
-            exportToJsonAndDownload();
+        const triggerSendEvHandler = ((event: MessageEvent<SAGETriggerSendMsg>) => {
+            if (event.data.msgId === SAGEMessageID.TriggerSend) {
+                console.log('structor: save triggered by SAGE');
+                console.log(event);
+                exportToJsonAndDownload();
+            }
         }) as EventListener;
-        window.document.addEventListener(SAGETriggerSendEvName, triggerSendEvHandler, false)
+        window.addEventListener('message', triggerSendEvHandler, false)
 
-		return () => window.document.removeEventListener(SAGETriggerSendEvName, triggerSendEvHandler);
+		return () => window.removeEventListener('message', triggerSendEvHandler);
     }, [exportToJsonAndDownload]);
 
     const hideMenu = () => {

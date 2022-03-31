@@ -1,22 +1,26 @@
 import { Questionnaire } from './fhir';
 
-export interface SAGESendToStructorEvData {
-    questionnaireResource: Questionnaire // Hope this is the same as @types/fhir/r4 which is used by SAGE
+export enum SAGEMessageID {
+    TriggerSend = "SAGETriggerSend",
+    SendToStructor = "SAGESendToStructor",
 }
-export const SAGESendToStructorEvName = "SAGESendToStructor";
-export type SAGESendToStructorEv = CustomEvent<SAGESendToStructorEvData>;
-
-export interface StructorReadyEvNameData {
-    readyType: "start" | "load"
+export interface SAGESendToStructorMsg {
+    msgId: SAGEMessageID.SendToStructor,
+    questionnaireResource: Questionnaire,
 }
-export const StructorReadyEvName = "StructorReady";
-export type StructorReadyEv = CustomEvent<StructorReadyEvNameData>;
-
-export const SAGETriggerSendEvName = "SAGETriggerSend";
-export type SAGETriggerSendEv = CustomEvent<unknown>;
-
-export interface StructorSendToSAGEEvData {
-    questionnaireStr: string
+export interface SAGETriggerSendMsg {
+    msgId: SAGEMessageID.TriggerSend,
 }
-export const StructorSendToSAGEEvName = "StructorSendToSAGE"
-export type StructorSendToSAGEEv = CustomEvent<StructorSendToSAGEEvData>;
+
+export enum StructorMessageID {
+    Ready = "StructorReady",
+    SendToSAGE = "StructorSendToSAGE",
+}
+export interface StructorReadyMsg {
+    msgId: StructorMessageID.Ready,
+    readyType: "start" | "load",
+}
+export interface StructorSendToSAGEMsg {
+    msgId: StructorMessageID.SendToSAGE,
+    questionnaireStr: string,
+}

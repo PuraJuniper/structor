@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import FormBuilder from './FormBuilder';
 import Btn from '../components/Btn/Btn';
 import './FrontPage.css';
-import { SAGESendToStructorEv, SAGESendToStructorEvName, StructorReadyEvName, StructorReadyEvNameData } from '../types/SAGE';
+import { SAGEMessageID, SAGESendToStructorMsg, StructorMessageID, StructorReadyMsg } from '../types/SAGE';
 
 
 const FrontPage = (): JSX.Element => {
@@ -26,30 +26,32 @@ const FrontPage = (): JSX.Element => {
 
     // SAGE: Add event listener to load Questionnaires
     useEffect(() => {
-        const sageInputHandler = ((event: SAGESendToStructorEv) => {
-            console.log('structor got event:');
-            console.log(event);
-            const importedState = mapToTreeState(event.detail.questionnaireResource);
-            dispatch(resetQuestionnaireAction(importedState));
-            setIsLoading(false);
-            setIsFormBuilderShown(true);
-            // Tell SAGE that Structor has loaded the Questionnaire that was sent
-            console.log(window.parent.document.dispatchEvent(new CustomEvent<StructorReadyEvNameData>(StructorReadyEvName, {
-                detail: {
-                    readyType: "load"
+        const sageInputHandler = ((event: MessageEvent<SAGESendToStructorMsg>) => {
+            if (event.data.msgId === SAGEMessageID.SendToStructor) {
+                console.log('structor got event:');
+                console.log(event);
+                const importedState = mapToTreeState(event.data.questionnaireResource);
+                dispatch(resetQuestionnaireAction(importedState));
+                setIsLoading(false);
+                setIsFormBuilderShown(true);
+                // Tell SAGE that Structor has loaded the Questionnaire that was sent
+                const readyMsg: StructorReadyMsg = {
+                    msgId: StructorMessageID.Ready,
+                    readyType: "load",
                 }
-            })));
+                console.log(parent.postMessage(readyMsg, "*"));
+            }
         }) as EventListener;
-        window.document.addEventListener(SAGESendToStructorEvName, sageInputHandler, false)
+        window.addEventListener('message', sageInputHandler, false)
         
         // Tell SAGE that Structor is ready to receive events
-        console.log(window.parent.document.dispatchEvent(new CustomEvent<StructorReadyEvNameData>(StructorReadyEvName, {
-            detail: {
-                readyType: "start"
-            }
-        })));
+        const readyStartMsg: StructorReadyMsg = {
+            msgId: StructorMessageID.Ready,
+            readyType: "start",
+        }
+        console.log(parent.postMessage(readyStartMsg, "*"));
 
-		return () => window.document.removeEventListener(SAGESendToStructorEvName, sageInputHandler);
+		return () => window.removeEventListener("message", sageInputHandler);
     }, [dispatch]);
 
     const getStoredQuestionnaire = async () => {

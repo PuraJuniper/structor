@@ -83,13 +83,14 @@ const Navbar = ({
     };
 
     const getFileName = (): string => {
-        let technicalName = state.qMetadata.name || 'skjema';
-        technicalName = technicalName.length > 40 ? technicalName.substring(0, 40) + '...' : technicalName;
+        // let technicalName = state.qMetadata.name || 'skjema';
+        // technicalName = technicalName.length > 40 ? technicalName.substring(0, 40) + '...' : technicalName;
         const version = state.qMetadata.version ? `-v${state.qMetadata.version}` : '';
-        if (state.qAdditionalLanguages && Object.values(state.qAdditionalLanguages).length < 1) {
-            return `${technicalName}-${state.qMetadata.language}${version}`;
-        }
-        return `${technicalName}${version}`;
+        // if (state.qAdditionalLanguages && Object.values(state.qAdditionalLanguages).length < 1) {
+        //     return `${technicalName}-${state.qMetadata.language}${version}`;
+        // }
+        // return `${technicalName}${version}`;
+        return `${state.qMetadata.title}${version}`
     };
 
     const handleMenuItemClick = (clickedItem: MenuItem) => {

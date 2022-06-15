@@ -1,7 +1,6 @@
 import axios from "axios";
 import _ from "lodash";
-import State from "../../state";
-import { SageCoding } from "./wizardLogic";
+import { Coding } from "../types/fhir";
 
 // These ontology names are from Bioportal
 export const ontologyToSystemAndVersion: {[key: string]: {system: string, version: string} | undefined} = {
@@ -41,7 +40,8 @@ export const systemUrlToOntology: {[systemUrl: string]: string | undefined} = {}
 Object.entries(ontologyToSystemAndVersion).forEach(v => v[1] ? (systemUrlToOntology[v[1].system] = v[0]) : null)
 
 
-export async function search(text: string, ontologies?: string[], searchType?: string, semanticTypes?: string[], requireExactMatch?: boolean): Promise<SageCoding[]> {
+export async function search(text: string, ontologies?: string[], searchType?: string, semanticTypes?: string[], requireExactMatch?: boolean): Promise<Coding[]> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const ontologiesParam = ontologies === undefined ? Object.keys(ontologyToSystemAndVersion).join(',') : ontologies.join(',');
     if (searchType && searchType == 'concept' && ontologies && ontologies.includes('SNOMEDCT')) {
         return await searchForSNOMEDConcept(text);
@@ -58,8 +58,8 @@ export async function search(text: string, ontologies?: string[], searchType?: s
  * @param ontologies Which ontologies (systems) should this search be restricted to, if any
  * @returns Results from the search
  */
-export async function searchForText(text: string, ontologies?: string[], semanticTypes?: string[], requireExactMatch?: boolean): Promise<SageCoding[]> {
-    let res: SageCoding[] = [];
+export async function searchForText(text: string, ontologies?: string[], semanticTypes?: string[], requireExactMatch?: boolean): Promise<Coding[]> {
+    let res: Coding[] = [];
     const ontologiesParam = ontologies === undefined ? Object.keys(ontologyToSystemAndVersion).join(',') : ontologies.join(',');
     try {
         const response = await axios({
@@ -70,25 +70,24 @@ export async function searchForText(text: string, ontologies?: string[], semanti
                 display_context: 'false',
                 require_exact_match: requireExactMatch,
                 ontologies: ontologiesParam,
-                apikey: State.get().bioportalApikey,
+                apikey: process.env.REACT_APP_BIOPORTAL_APIKEY,
                 semantic_types: semanticTypes === undefined ? null : semanticTypes.reduce((acc, type) => acc + type + ','),
                 include: "prefLabel,synonym,definition,notation"
             }
         })
-        // Convert response to SageCoding array
-        res = (response.data.collection as Array<any>).flatMap<SageCoding>(v => {
+        // Convert response to Coding array
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        res = (response.data.collection as Array<any>).flatMap<Coding>(v => {
             const ontologyName = (v.links.ontology as string).split('/').pop();
             if (ontologyName === undefined) {
                 return [];
             }
-            const {system, version} = ontologyToSystemAndVersion[ontologyName] ?? { system: "unknown", version: "unknown"};
+            const {system, version} = ontologyToSystemAndVersion[ontologyName] ?? { system: "unknown", version: undefined};
             return [{
                 code: v.notation,
                 display: v.prefLabel,
                 system: system,
                 version: version,
-                __sageDefinitions: (v.definition as Array<string>),
-                __sageSynonyms: (v.synonym as Array<string>),
             }]
         })
     }
@@ -101,7 +100,7 @@ export async function searchForText(text: string, ontologies?: string[], semanti
 
 export const memoizedSearchForText = _.memoize(searchForText)
 
-export async function searchForSNOMEDConcept(concept: string): Promise<SageCoding[]> {
+export async function searchForSNOMEDConcept(concept: string): Promise<Coding[]> {
     return await searchForConcept(concept, ["SNOMEDCT"])
 }
 
@@ -115,9 +114,10 @@ async function searchForConcept(concept: string, ontologies?: string[]) {
             params: {
                 q: concept,
                 ontologies: ontologiesParam,
-                apikey: State.get().bioportalApikey,
+                apikey: process.env.REACT_APP_BIOPORTAL_APIKEY,
             }
         });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const descendantsUrl = (conceptResponse.data.collection as Array<any>)[0]?.links?.descendants;
         if (descendantsUrl === undefined) {
             return [];
@@ -126,24 +126,23 @@ async function searchForConcept(concept: string, ontologies?: string[]) {
             url: descendantsUrl,
             method: "GET",
             params: {
-                apikey: State.get().bioportalApikey,
+                apikey: process.env.REACT_APP_BIOPORTAL_APIKEY,
                 include: "prefLabel,synonym,definition,notation"
             }
         });
-        // Convert response to SageCoding array
-        return (response.data.collection as Array<any>).flatMap<SageCoding>(v => {
+        // Convert response to Coding array
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (response.data.collection as Array<any>).flatMap<Coding>(v => {
             const ontologyName = (v.links.ontology as string).split('/').pop();
             if (ontologyName === undefined) {
                 return [];
             }
-            const { system, version } = ontologyToSystemAndVersion[ontologyName] ?? { system: "unknown", version: "unknown" };
+            const { system, version } = ontologyToSystemAndVersion[ontologyName] ?? { system: "unknown", version: undefined };
             return [{
                 code: v.notation ?? (v['@id'] as string).split('/').pop(),
                 display: v.prefLabel,
                 system: system,
                 version: version,
-                __sageDefinitions: (v.definition as Array<string>),
-                __sageSynonyms: (v.synonym as Array<string>),
             }];
         });
     }
@@ -153,3 +152,7 @@ async function searchForConcept(concept: string, ontologies?: string[]) {
     return [];
 }
 
+export function loadCodes(inputValue: string, callback: (results: Coding[]) => void): void {
+    memoizedSearchForText(inputValue).then(v => { console.log(v); callback(v) });
+}
+export const debouncedLoadCodes = _.debounce(loadCodes, 500)

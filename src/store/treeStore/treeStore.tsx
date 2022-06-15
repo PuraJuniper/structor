@@ -55,6 +55,8 @@ import {
     UpdateValueSetAction,
     UPDATE_SETTING_TRANSLATION_ACTION,
     UpdateSettingTranslationAction,
+    SET_ITEM_CODES_ACTION,
+    SetItemCodesAction,
 } from './treeActions';
 import { IQuestionnaireMetadata, IQuestionnaireMetadataType } from '../../types/IQuestionnaireMetadataType';
 import createUUID from '../../helpers/CreateUUID';
@@ -70,6 +72,7 @@ export type ActionType =
     | AddItemCodeAction
     | AddQuestionnaireLanguageAction
     | DeleteItemCodeAction
+    | SetItemCodesAction
     | ImportValueSetAction
     | RemoveQuestionnaireLanguageAction
     | UpdateItemCodePropertyAction
@@ -439,6 +442,17 @@ function updateItemCodeProperty(draft: TreeState, action: UpdateItemCodeProperty
     }
 }
 
+function setItemCodes(draft: TreeState, action: SetItemCodesAction): void {
+    if (!draft.qItems[action.linkId]) {
+        console.error('Trying to set "code"s to non-extistent item');
+        return;
+    }
+    if (!draft.qItems[action.linkId].code) {
+        draft.qItems[action.linkId].code = [];
+    }
+    draft.qItems[action.linkId].code = action.codes;
+}
+
 function updateItemTranslation(draft: TreeState, action: UpdateItemTranslationAction) {
     if (draft.qAdditionalLanguages) {
         if (!draft.qAdditionalLanguages[action.languageCode].items[action.linkId]) {
@@ -670,6 +684,9 @@ const reducer = produce((draft: TreeState, action: ActionType) => {
             break;
         case UPDATE_ITEM_CODE_PROPERTY_ACTION:
             updateItemCodeProperty(draft, action);
+            break;
+        case SET_ITEM_CODES_ACTION:
+            setItemCodes(draft, action);
             break;
         case ADD_QUESTIONNAIRE_LANGUAGE_ACTION:
             addLanguage(draft, action);

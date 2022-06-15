@@ -54,6 +54,7 @@ const FrontPage = (): JSX.Element => {
 		return () => window.removeEventListener("message", sageInputHandler);
     }, [dispatch]);
 
+    // eslint-disable-next-line
     const getStoredQuestionnaire = async () => {
         const indexedDbState = await getStateFromDb();
         setStateFromStorage(indexedDbState);

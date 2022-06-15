@@ -18,6 +18,8 @@ Run `npm install -g netlify-cli` before running npm run functions :)
 
 ## Embedding into SAGE
 
+Important! Use node version 14.18.1 (or similar)
+
 ### Development
 
 Run `npm run build` to build the app, then run `node server.js` to serve it on port 9001 as expected by SAGE's webpack-dev-server config

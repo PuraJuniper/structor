@@ -246,7 +246,7 @@ const AnchorMenu = (props: AnchorMenuProps): JSX.Element => {
                 {props.qOrder.length === 0 && (
                     <p className="anchor-menu__placeholder">
                         {t(
-                            'Here you will find a summary of questionnaire elements. Drag a component here to start building this Questionnaire',
+                            'Drag a component here to start building this Questionnaire',
                         )}
                     </p>
                 )}

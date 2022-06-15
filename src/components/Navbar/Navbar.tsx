@@ -128,8 +128,8 @@ const Navbar = ({
                             {getProfileName()}
                         </p>
                     )}
-                    <Btn title={t('Preview')} onClick={showFormFiller} />
-                    <Btn title={t('Send to SAGE')} onClick={() => exportToJsonAndDownload()} />
+                    <Btn title={t('Questionnaire Preview')} onClick={showFormFiller} />
+                    {/* <Btn title={t('Send to SAGE')} onClick={() => exportToJsonAndDownload()} /> */}
                     <div
                         className="more-menu"
                         tabIndex={0}

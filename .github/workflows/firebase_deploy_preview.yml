@@ -1,5 +1,7 @@
 name: Deploy commit to new Firebase Hosting preview channel
 'on': push
+env:
+    REACT_APP_BIOPORTAL_APIKEY: ${{ secrets.REACT_APP_BIOPORTAL_APIKEY }}
 jobs:
   build_and_deploy_to_preview:
     runs-on: ubuntu-latest

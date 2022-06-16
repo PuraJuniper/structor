@@ -251,10 +251,13 @@ export const getItemDisplayType = (item: QuestionnaireItem): string => {
         return 'Choice';
     } else if (
         item.type === IQuestionnaireItemType.decimal ||
-        item.type === IQuestionnaireItemType.integer ||
-        item.type === IQuestionnaireItemType.quantity
+        item.type === IQuestionnaireItemType.integer
     ) {
         return 'Number';
+    } else if (
+        item.type === IQuestionnaireItemType.quantity
+    ) {
+        return 'Quantity'
     }
 
     return '';

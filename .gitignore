@@ -17,6 +17,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env
 .idea
 .eslintcache
 examples/form-filler/node_modules

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { ChangeEvent, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import FormField from '../../FormField/FormField';
@@ -14,6 +15,8 @@ import UriField from '../../FormField/UriField';
 import { createUriUUID } from '../../../helpers/uriHelper';
 import { TreeContext } from '../../../store/treeStore/treeStore';
 import InputField from '../../InputField/inputField';
+import AsyncSelect from 'react-select/async';
+import { searchForUcumUnit } from '../../../helpers/ucum';
 
 type UnitTypeSelectorProps = {
     item: QuestionnaireItem;
@@ -100,37 +103,35 @@ const UnitTypeSelector = (props: UnitTypeSelectorProps): JSX.Element => {
     const { code, display, system } = currentCoding ? currentCoding : { code: '', display: '', system: '' };
 
     return (
-        <>
-            <FormField label={t('Select unit')}>
-                <Select options={quantityUnitTypes} onChange={updateQuantityUnitType} value={selectedUnitType} />
-            </FormField>
-            {isCustom && (
-                <>
-                    <div className="horizontal equal">
-                        <FormField label={t('Display')}>
-                            <InputField
-                                defaultValue={display}
-                                onBlur={(event) => updateCustomQuantityUnitType('display', event)}
-                            />
-                        </FormField>
-                        <FormField label={t('Code')}>
-                            <InputField
-                                defaultValue={code}
-                                onBlur={(event) => updateCustomQuantityUnitType('code', event)}
-                            />
-                        </FormField>
-                    </div>
-                    <div className="horizontal full">
-                        <FormField label={t('System')}>
-                            <UriField
-                                value={system}
-                                onBlur={(event) => updateCustomQuantityUnitType('system', event)}
-                            />
-                        </FormField>
-                    </div>
-                </>
-            )}
-        </>
+        <FormField label={t('Select unit')}>
+            <AsyncSelect<Coding>
+                loadOptions={searchForUcumUnit}
+                value={currentCoding}
+                noOptionsMessage={input =>
+                    input.inputValue !== "" ? `No unit found for "${input.inputValue}"`
+                        : `Please enter a unit`}
+                isClearable={true}
+                onChange={newUnit => setItemExtension(
+                    props.item,
+                    {
+                        url: IExtentionType.questionnaireUnit,
+                        valueCoding: newUnit === null ? undefined : newUnit,
+                    },
+                    dispatch
+                )}
+                formatOptionLabel={unit => {
+                    return (
+                        <div>
+                            <b>{unit.display ?? "Unknown Unit Name"}</b>
+                            <br />
+                            {unit.code} <i>{unit.system}</i>
+                        </div>
+                    )
+                }}
+                getOptionValue={option => option.code ?? "undefined"}
+                isOptionSelected={option => option.code === currentCoding?.code}
+            />
+        </FormField>
     );
 };
 

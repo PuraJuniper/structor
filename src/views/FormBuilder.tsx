@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,14 +30,6 @@ const FormBuilder = (): JSX.Element => {
 
     return (
         <>
-            <Navbar
-                showFormFiller={() => setShowPreview(!showPreview)}
-                validationErrors={validationErrors}
-                setValidationErrors={setValidationErrors}
-                translationErrors={translationErrors}
-                setTranslationErrors={setTranslationErrors}
-            />
-
             <div className="editor">
                 <AnchorMenu
                     dispatch={dispatch}
@@ -56,15 +49,6 @@ const FormBuilder = (): JSX.Element => {
                 )}
             </div>
             <div className="page-wrapper">
-                <div className="details-button">
-                    <IconBtn
-                        type="info"
-                        title={t('Questionnaire details')}
-                        color="black"
-                        onClick={toggleFormDetails}
-                        size="large"
-                    />
-                </div>
                 <FormDetailsDrawer
                     setTranslateLang={(language: string) => {
                         setTranslateLang(language);

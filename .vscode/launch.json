@@ -5,16 +5,41 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch via node",
+            "name": "Build",
             "request": "launch",
             "runtimeArgs": [
-                "server.js"
+                "run",
+                "build"
             ],
-            "runtimeExecutable": "node",
+            "runtimeExecutable": "npm",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "type": "node"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Serve",
+            "program": "${workspaceFolder}/server.js"
+        },
+        {
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "name": "ffLaunch",
+            "url": "http://localhost:9001/structor/",
+            "webRoot": "${workspaceFolder}"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Debug",
+            "configurations": [
+                "Serve",
+                "ffLaunch"
+            ],
+            "stopAll": true
         }
     ]
 }

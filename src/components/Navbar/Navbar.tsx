@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useContext, useRef, useState, useEffect, useCallback } from 'react';
 import { generateQuestionnaire } from '../../helpers/generateQuestionnaire';
 import { Languages, TreeContext } from '../../store/treeStore/treeStore';
@@ -114,93 +115,6 @@ const Navbar = ({
 
     return (
         <>
-            <header ref={navBarRef}>
-                <div className="form-title">
-                    <h1>{getFileName()}</h1>
-                </div>
-
-                <div className="pull-right">
-                    {profile && profile.name && (
-                        <p
-                            className="truncate profile-name"
-                            title={t('You are logged in as {0}').replace('{0}', profile.name)}
-                        >
-                            {getProfileName()}
-                        </p>
-                    )}
-                    <Btn title={t('Questionnaire Preview')} onClick={showFormFiller} />
-                    {/* <Btn title={t('Send to SAGE')} onClick={() => exportToJsonAndDownload()} /> */}
-                    <div
-                        className="more-menu"
-                        tabIndex={0}
-                        role="button"
-                        aria-label="menu list"
-                        aria-pressed="false"
-                        onClick={() => handleMenuItemClick(MenuItem.more)}
-                        onKeyPress={(e) => e.code === 'Enter' && handleMenuItemClick(MenuItem.more)}
-                    >
-                        <img className="more-menu-icon" src={MoreIcon} alt="more icon" height={25} />
-                    </div>
-                </div>
-                {selectedMenuItem === MenuItem.more && (
-                    <div className="menu">
-                        <Btn
-                            title={t('Validate')}
-                            onClick={() => {
-                                setValidationErrors(
-                                    validateOrphanedElements(t, state.qOrder, state.qItems, state.qContained || []),
-                                );
-                                setTranslationErrors(
-                                    validateTranslations(t, state.qOrder, state.qItems, state.qAdditionalLanguages),
-                                );
-                                setShowValidationErrors(true);
-                            }}
-                        />
-                        <Btn title={t('JSON')} onClick={() => callbackAndHide(() => setShowJSONView(!showJSONView))} />
-                        <Btn
-                            title={t('Import choices')}
-                            onClick={() => callbackAndHide(() => setShowImportValueSet(!showImportValueSet))}
-                        />
-                        <Btn
-                            title={t('Choices')}
-                            onClick={() => callbackAndHide(() => setShowContained(!showContained))}
-                        />
-                        {i18n.language !== 'nb-NO' && (
-                            <Btn
-                                title={t('Change to norwegian')}
-                                onClick={() =>
-                                    callbackAndHide(() => {
-                                        i18n.changeLanguage('nb-NO');
-                                        localStorage.setItem('editor_language', 'nb-NO');
-                                    })
-                                }
-                            />
-                        )}
-                        {i18n.language !== 'en-US' && (
-                            <Btn
-                                title={t('Change to English')}
-                                onClick={() =>
-                                    callbackAndHide(() => {
-                                        i18n.changeLanguage('en-US');
-                                        localStorage.setItem('editor_language', 'en-US');
-                                    })
-                                }
-                            />
-                        )}
-                        {i18n.language !== 'fr-FR' && (
-                            <Btn
-                                title={t('Change to French')}
-                                onClick={() =>
-                                    callbackAndHide(() => {
-                                        i18n.changeLanguage('fr-FR');
-                                        localStorage.setItem('editor_language', 'fr-FR');
-                                    })
-                                }
-                            />
-                        )}
-                    </div>
-                )}
-            </header>
             {showValidationErrors && (
                 <ValidationErrorsModal
                     validationErrors={validationErrors}

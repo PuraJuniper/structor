@@ -30,6 +30,14 @@ const FormBuilder = (): JSX.Element => {
 
     return (
         <>
+            <Navbar
+                showFormFiller={() => setShowPreview(!showPreview)}
+                validationErrors={validationErrors}
+                setValidationErrors={setValidationErrors}
+                translationErrors={translationErrors}
+                setTranslationErrors={setTranslationErrors}
+            />
+
             <div className="editor">
                 <AnchorMenu
                     dispatch={dispatch}

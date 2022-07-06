@@ -10,13 +10,13 @@ import { isValidId } from './MetadataHelper';
 import { IExtentionType } from '../types/IQuestionnareItemType';
 import { Extension } from '../types/fhir';
 
-export const INITIAL_LANGUAGE: Language = { code: 'nb-NO', display: 'Norsk Bokmål', localDisplay: 'Norsk bokmål' };
+export const INITIAL_LANGUAGE: Language = { code: 'en-GB', display: 'English', localDisplay: 'English' };
 
 export const supportedLanguages: Language[] = [
     INITIAL_LANGUAGE,
+    { code: 'nb-NO', display: 'Norsk Bokmål', localDisplay: 'Norsk bokmål' },
     { code: 'nn-NO', display: 'Nynorsk', localDisplay: 'Norsk nynorsk' },
     { code: 'se-NO', display: 'Samisk', localDisplay: 'Davvisámegillii' },
-    { code: 'en-GB', display: 'Engelsk', localDisplay: 'English' },
     { code: 'pl-PL', display: 'Polsk', localDisplay: 'Polskie' },
     { code: 'ro-RO', display: 'Rumensk', localDisplay: 'Română' },
     { code: 'lt-LT', display: 'Litauisk', localDisplay: 'Lietuvis' },

@@ -29,7 +29,12 @@
             "reAttach": true,
             "name": "ffLaunch",
             "url": "http://localhost:9001/structor/",
-            "webRoot": "${workspaceFolder}"
+            "pathMappings": [
+                {
+                    "url": "http://localhost:9001/structor/static/js/helpers",
+                    "path": "${workspaceFolder}/src/helpers"
+                }
+            ]
         }
     ],
     "compounds": [

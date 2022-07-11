@@ -30,27 +30,27 @@ const ValidationAnswerTypeString = ({ item }: Props): JSX.Element => {
                 '^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?',
         },
         {
-            display: t('National identity number'),
+            display: t('Social Insurance/Security number'),
             code:
-                '^((((0[1-9]|[12]\\d|3[01])([04][13578]|[15][02]))|((0[1-9]|[12]\\d|30)([04][469]|[15]1))|((0[1-9]|[12]\\d)([04]2)))|((([0-7][1-9]|[12]\\d|3[01])(0[13578]|1[02]))|(([0-7][1-9]|[12]\\d|30)(0[469]|11))|(([0-7][1-9]|[12]\\d)(02))))\\d{7}$',
+                '^(\d{3}-\d{3}-\d{3})|(\d{9})|^(?!666|000|9\d{2})\d{3}-(?!00)\d{2}-(?!0{4})\d{4}$',
         },
         {
-            display: t('Telefonnummer'),
-            code: '^((\\+|00)(\\d{1,3}))?\\d{5,12}$',
+            display: t('Telephone Number'),
+            code: '^\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$',
         },
         {
-            display: t('Only norwegian characters'),
-            code: '^[æøåÆØÅa-zA-Z ]*$',
+            display: t('Only latin characters'),
+            code: '^[a-zA-Z ]*$',
         },
         {
-            display: t('Only norwegian characters + hyphen and space (used for names)'),
-            code: '^[æøåÆØÅa-zA-Z\\- ]*$',
+            display: t('Only latin characters + hyphen and space (used for names)'),
+            code: '^[a-zA-Z\\- ]*$',
         },
         {
-            display: t('Only norwegian characters with line breaks'),
-            code: '^(?:[æøåÆØÅa-zA-Z0-9,.!?@()+\\-\\/*]|[ \r\n\t])*$',
+            display: t('Only latin characters with line breaks'),
+            code: '^(?:[a-zA-Z0-9,.!?@()+\\-\\/*]|[ \r\n\t])*$',
         },
-        { display: t('Zip code'), code: '^(000[1-9]|0[1-9][0-9][0-9]|[1-9][0-9][0-9][0-8])$' },
+        { display: t('Zip/Postal code'), code: '(^\d{5}$)|(^\d{9}$)|(^\d{5}-\d{4}$)|^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$' },
     ];
 
     const updateMaxLength = (number: number) => {

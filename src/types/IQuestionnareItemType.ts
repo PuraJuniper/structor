@@ -99,7 +99,7 @@ export enum IExtentionType {
     minLength = 'http://hl7.org/fhir/StructureDefinition/minLength',
     optionReference = 'http://ehelse.no/fhir/StructureDefinition/sdf-optionReference',
     presentationbuttons = 'http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons',
-    questionnaireUnit = 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+    questionnaireUnit = 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitoption',
     regEx = 'http://hl7.org/fhir/StructureDefinition/regex',
     repeatstext = 'http://ehelse.no/fhir/StructureDefinition/repeatstext',
     maxOccurs = 'http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs',

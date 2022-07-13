@@ -238,13 +238,13 @@ export const getItemDisplayType = (item: QuestionnaireItem): string => {
     } else if (item.type === IQuestionnaireItemType.string || item.type === IQuestionnaireItemType.text) {
         return 'Text';
     } else if (item.type === IQuestionnaireItemType.group) {
-        return 'Group';
+        return 'Section';
     } else if (item.type === IQuestionnaireItemType.date || item.type === IQuestionnaireItemType.dateTime) {
         return 'Date';
     } else if (item.type === IQuestionnaireItemType.time) {
         return 'Time';
     } else if (item.type === IQuestionnaireItemType.attachment) {
-        return 'Attachment';
+        return 'File attachment';
     } else if (item.type === IQuestionnaireItemType.boolean) {
         return 'Confirmation';
     } else if (item.type === IQuestionnaireItemType.choice || item.type === IQuestionnaireItemType.openChoice) {

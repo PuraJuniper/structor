@@ -151,17 +151,14 @@ const AnchorMenu = (props: AnchorMenuProps): JSX.Element => {
             <div className="questionnaire-overview">
                 <div className="questionnaire-overview__toolbox">
                     <strong>{t('Components')}</strong>
-                    {createTypeComponent(IQuestionnaireItemType.group, t('Group'))}
+                    {createTypeComponent(IQuestionnaireItemType.group, t('Section'))}
                     {createTypeComponent(IQuestionnaireItemType.string, t('Text answer'))}
                     {createTypeComponent(IQuestionnaireItemType.display, t('Information text'))}
-                    {createTypeComponent(IQuestionnaireItemType.attachment, t('Attachment'))}
-                    {createTypeComponent(IQuestionnaireItemType.receiver, t('Recipient list'))}
-                    {createTypeComponent(IQuestionnaireItemType.receiverComponent, t('Recipient component'))}
+                    {createTypeComponent(IQuestionnaireItemType.attachment, t('File attachment'))}
                     {createTypeComponent(IQuestionnaireItemType.boolean, t('Confirmation'))}
                     {createTypeComponent(IQuestionnaireItemType.choice, t('Choice'))}
                     {createTypeComponent(IQuestionnaireItemType.date, t('Date'))}
                     {createTypeComponent(IQuestionnaireItemType.time, t('Time'))}
-                    {createTypeComponent(IQuestionnaireItemType.integer, t('Number'))}
                     {createTypeComponent(IQuestionnaireItemType.quantity, t('Quantity'))}
                 </div>
                 <SortableTree

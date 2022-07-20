@@ -115,6 +115,10 @@ const Navbar = ({
 
     return (
         <>
+            {/* SAGE: Uncomment to test previewer */}
+            {/* <div> 
+                <Btn title={t('Preview')} onClick={showFormFiller} variant="primary" />
+            </div> */}
             {showValidationErrors && (
                 <ValidationErrorsModal
                     validationErrors={validationErrors}

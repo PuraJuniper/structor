@@ -175,7 +175,11 @@ const Question = (props: QuestionProps): JSX.Element => {
                         </FormField>
                     )}
                 </div>
-                <FormField label={t('Text')}>
+                
+                <FormField label={`${t('Question Code')} ${codeElements}`}>
+                    <Codes linkId={props.item.linkId} itemValidationErrors={props.itemValidationErrors} />
+                </FormField>
+                <FormField label={t('Question Text')}>
                     {isMarkdownActivated ? (
                         <MarkdownEditor data={getLabelText()} onBlur={dispatchUpdateMarkdownLabel} />
                     ) : (
@@ -222,9 +226,6 @@ const Question = (props: QuestionProps): JSX.Element => {
                         containedResources={props.containedResources}
                         itemValidationErrors={props.itemValidationErrors}
                     />
-                </Accordion>
-                <Accordion title={`${t('Code')} ${codeElements}`}>
-                    <Codes linkId={props.item.linkId} itemValidationErrors={props.itemValidationErrors} />
                 </Accordion>
                 <Accordion title={t('Advanced settings')}>
                     <AdvancedQuestionOptions item={props.item} parentArray={props.parentArray} />

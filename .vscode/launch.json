@@ -25,6 +25,19 @@
         },
         {
             "type": "firefox",
+            "request": "attach",
+            "name": "Attach",
+            "url": "http://localhost:9001/structor/",
+            // "webRoot": "${workspaceFolder}",
+            "pathMappings": [
+                {
+                    "url": "http://localhost:9001/structor/static/js/helpers",
+                    "path": "${workspaceFolder}/src/helpers"
+                }
+            ]
+        },
+        {
+            "type": "firefox",
             "request": "launch",
             "reAttach": true,
             "name": "ffLaunch",
@@ -42,7 +55,7 @@
             "name": "Debug",
             "configurations": [
                 "Serve",
-                "ffLaunch"
+                "Attach"
             ],
             "stopAll": true
         }

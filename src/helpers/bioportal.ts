@@ -153,6 +153,6 @@ async function searchForConcept(concept: string, ontologies?: string[]) {
 }
 
 export function loadCodes(inputValue: string, callback: (results: Coding[]) => void): void {
-    memoizedSearchForText(inputValue).then(v => { console.log(v); callback(v) });
+    memoizedSearchForText(inputValue).then(v => { callback(v) });
 }
 export const debouncedLoadCodes = _.debounce(loadCodes, 500)

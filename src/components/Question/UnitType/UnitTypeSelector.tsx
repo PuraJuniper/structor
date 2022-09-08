@@ -110,7 +110,7 @@ const UnitTypeSelector = (props: UnitTypeSelectorProps): JSX.Element => {
                 noOptionsMessage={input =>
                     input.inputValue !== "" ? `No unit found for "${input.inputValue}"`
                         : `Please enter a unit`}
-                isClearable={true}
+                isClearable={false} // `true` breaks `useOutsideClick` hook
                 onChange={newUnit => setItemExtension(
                     props.item,
                     {

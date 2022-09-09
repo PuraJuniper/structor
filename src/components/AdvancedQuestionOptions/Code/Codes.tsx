@@ -88,6 +88,7 @@ const Codes = ({ linkId, itemValidationErrors }: CodeProps): JSX.Element => {
         <div className="codes">
             <AsyncSelect<Coding, true>
                 isMulti
+                isClearable={false} // `true` breaks `useOutsideClick` hook
                 inputValue={searchInput}
                 onInputChange={(newInput, action): string => {
                     switch (action.action) {
